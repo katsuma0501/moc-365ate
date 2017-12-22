@@ -92,32 +92,29 @@
 </header>
 
 <div id="container" class="container">
-
-  <div class="page-header" id="banner">
     <div class="row">
       <div class="col-lg-12">
-      <div id="app">
-        <div id="calendar-nav">
-            <i class="glyphicon glyphicon-menu-left" v-on="click: moveLastMonth"></i>
-            <span>{{calData.year}} - {{getMonthName(calData.month)}}</span>
-            <i class="glyphicon glyphicon-menu-right"  v-on="click: moveNextMonth"></i>
-        </div>
-          <table id="calendar" class="table table-bordered">
-              <thead>
-                  <tr>
-                      <th v-repeat="week: weeks">{{week}}</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr v-repeat="week: calendar">
-                      <td v-repeat="day: week">{{day.day}}</td>
-                  </tr>
-              </tbody>
-          </table>
+            <div id="calendar">
+                    <div id="calendar-nav">
+                        <i class="glyphicon glyphicon-menu-left" v-on:click="moveLastMonth"></i>
+                        <span>{{calData.year}} - {{getMonthName(calData.month)}}</span>
+                        <i class="glyphicon glyphicon-menu-right"  v-on:click="moveNextMonth"></i>
+                    </div>
+                    <table id="calendar-table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th v-for="week in weeks">{{week}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="week in calendar">
+                                <td v-for="day in week">{{day.day}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
       </div>
     </div>
-  </div>
-
 </div>
 
 <footer>
@@ -130,77 +127,77 @@
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script>
     new Vue({
-    el: '#app',
-    data: {
-        weeks: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        calData: {year: 0, month: 0}
-    },
-    created: function (){
-        var date = new Date();
-        this.calData.year = date.getFullYear();
-        this.calData.month = date.getMonth() + 1;
-    },
-    methods: {
-        getMonthName: function(month) {
-            var monthName = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-            return monthName[month - 1];
+        el: '#calendar',
+        data: {
+            weeks: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            calData: {year: 0, month: 0}
         },
-        moveLastMonth: function() {
-            if (this.calData.month == 1) {
-                this.calData.year--;
-                this.calData.month = 12;
-            }
-            else {
-                this.calData.month--;
-            }
+        created: function (){
+            var date = new Date();
+            this.calData.year = date.getFullYear();
+            this.calData.month = date.getMonth() + 1;
         },
-        moveNextMonth: function() {
-            if (this.calData.month == 12) {
-                this.calData.year++;
-                this.calData.month = 1;
-            }
-            else {
-                this.calData.month++;
-            }
-        }
-    },
-    computed: {
-        calendar: function () {
-            // 1日の曜日
-            var firstDay = new Date(this.calData.year, this.calData.month - 1, 1).getDay();
-            // 晦日の日にち
-            var lastDate = new Date(this.calData.year, this.calData.month, 0).getDate();
-            // 日にちのカウント
-            var dayIdx = 1;
-
-            var calendar = [];
-            for (var w = 0; w < 6; w++) {
-                var week = [];
-
-                // 空白行をなくすため
-                if (lastDate < dayIdx) {break;}
-
-                for (var d = 0; d < 7; d++) {
-                    if (w == 0 && d < firstDay) {
-                        week[d] = {day: ''};
-                    } else if (w == 6 && lastDate < dayIdx) {
-                        week[d] = {day: ''};
-                        dayIdx++;
-                    } else if (lastDate < dayIdx) {
-                        week[d] = {day: ''};
-                        dayIdx++;
-                    } else {
-                        week[d] = {day: dayIdx};
-                        dayIdx++;
-                    }
+        methods: {
+            getMonthName: function(month) {
+                var monthName = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                return monthName[month - 1];
+            },
+            moveLastMonth: function() {
+                if (this.calData.month == 1) {
+                    this.calData.year--;
+                    this.calData.month = 12;
                 }
-
-                calendar.push(week);
+                else {
+                    this.calData.month--;
+                }
+            },
+            moveNextMonth: function() {
+                if (this.calData.month == 12) {
+                    this.calData.year++;
+                    this.calData.month = 1;
+                }
+                else {
+                    this.calData.month++;
+                }
             }
-            return calendar;
+        },
+        computed: {
+            calendar: function () {
+                // 1日の曜日
+                var firstDay = new Date(this.calData.year, this.calData.month - 1, 1).getDay();
+                // 晦日の日にち
+                var lastDate = new Date(this.calData.year, this.calData.month, 0).getDate();
+                // 日にちのカウント
+                var dayIdx = 1;
+
+                var calendar = [];
+                for (var w = 0; w < 6; w++) {
+                    var week = [];
+
+                    // 空白行をなくすため
+                    if (lastDate < dayIdx) {break;}
+
+                    for (var d = 0; d < 7; d++) {
+                        if (w == 0 && d < firstDay) {
+                            week[d] = {day: ''};
+                        } else if (w == 6 && lastDate < dayIdx) {
+                            week[d] = {day: ''};
+                            dayIdx++;
+                        } else if (lastDate < dayIdx) {
+                            week[d] = {day: ''};
+                            dayIdx++;
+                        } else {
+                            week[d] = {day: dayIdx};
+                            dayIdx++;
+                        }
+                    }
+
+                    calendar.push(week);
+                }
+                return calendar;
+            }
         }
-    }
-});
+      });
   </script>
 <script src="https://use.fontawesome.com/379c382024.js"></script>
 </body>
