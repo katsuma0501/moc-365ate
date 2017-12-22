@@ -51,6 +51,9 @@
     .progress {
       margin-bottom: 10px;
     }
+    .caltd{
+        height: 100px;
+    }
   }
   </style>
 
@@ -108,7 +111,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="week in calendar">
-                                <td v-for="day in week">{{day.day}}</td>
+                                <td class="col-lg-1 caltd" v-for="day in week"><a class="center-block caltd">{{day.day}}</a></td>
                             </tr>
                         </tbody>
                     </table>
